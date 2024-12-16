@@ -1,37 +1,29 @@
 use crate::Complex;
 use crate::Lateral;
+use num::Num;
 use std::ops;
+use std::ops::{Add, Neg};
 
-impl ops::Add<Lateral> for Lateral {
-    type Output = Lateral;
+impl<Q> ops::Add<Lateral<Q>> for Lateral<Q>
+where
+    for<'a> Q: Num + Add<Output = Q> + Neg<Output = Q>,
+{
+    type Output = Lateral<Q>;
 
-    fn add(self, w: Lateral) -> Lateral {
-        return Lateral::new(self.b + w.b);
+    fn add(self, w: Lateral<Q>) -> Lateral<Q> {
+        let b = self.b + w.b;
+        return Lateral::new(b);
     }
 }
 
-impl ops::Add<Complex> for Lateral {
-    type Output = Complex;
+impl<'a, 'b, Q> ops::Add<&'b Lateral<Q>> for &'a Lateral<Q>
+where
+    Q: Num + Add<Output = Q> + Neg<Output = Q> + Copy,
+{
+    type Output = Lateral<Q>;
 
-    fn add(self, z: Complex) -> Complex {
-        let w_bar = Lateral::new(&self.b + &z.w.b);
-        return Complex::new(z.a, w_bar);
-    }
-}
-
-impl<'a, 'b> ops::Add<&'a Lateral> for &'b Lateral {
-    type Output = Lateral;
-
-    fn add(self, w: &'a Lateral) -> Lateral {
-        return Lateral::new(self.b + w.b);
-    }
-}
-
-impl<'a, 'b> ops::Add<&'a Complex> for &'b Lateral {
-    type Output = Complex;
-
-    fn add(self, z: &'a Complex) -> Complex {
-        let w_bar = Lateral::new(self.b + z.w.b);
-        return Complex::new(z.a, w_bar);
+    fn add(self, w: &'b Lateral<Q>) -> Lateral<Q> {
+        let b = self.b + w.b;
+        return Lateral::new(b);
     }
 }

@@ -1,14 +1,17 @@
 use crate::Lateral;
 use core::fmt;
+use core::fmt::Display;
+use num::{one, Num, One};
 
-impl fmt::Display for Lateral {
+impl<Q> fmt::Display for Lateral<Q>
+where
+    for<'a> Q: Num + Display + One,
+{
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let result = if self.b == 1.0 {
-            String::from("i")
+        if self.b == one() {
+            return write!(f, "i");
         } else {
-            format!("{}i", self.b)
-        };
-
-        return write!(f, "{}", result);
+            return write!(f, "{}i", self.b.to_string());
+        }
     }
 }

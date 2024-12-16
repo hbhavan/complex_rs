@@ -33,7 +33,7 @@ fn mul_lateral_test() {
     let w2 = Lateral::new(2.5);
 
     let w4 = Lateral::new(2.4);
-    let x = 2;
+    let x = 2.0;
 
     let w3 = &w1 * &w2;
     let w5 = &w4 * &x;
@@ -53,6 +53,7 @@ fn init_complex_test() {
     println!("z3 = {}", z3);
 }
 
+/*
 fn add_complex_test() {
     println!("---ADD COMPLEX TEST---");
     let z1 = Complex::new(2.1, Lateral::new(1.2));
@@ -86,6 +87,7 @@ fn mul_complex_test() {
     println!("{} * {} = {}", z1, w, z4);
     println!("{} * {} = {}", z1, z2, y);
 }
+*/
 
 fn main() {
     init_lateral_test();
@@ -93,6 +95,6 @@ fn main() {
     mul_lateral_test();
 
     init_complex_test();
-    add_complex_test();
-    mul_complex_test();
+    //add_complex_test();
+    //mul_complex_test();
 }

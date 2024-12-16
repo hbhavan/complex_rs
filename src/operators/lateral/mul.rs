@@ -1,73 +1,53 @@
 use crate::Complex;
 use crate::Lateral;
+use num::Num;
 use std::ops;
+use std::ops::{Mul, Neg};
 
-impl ops::Mul<f64> for Lateral {
-    type Output = Lateral;
+impl<Q> ops::Mul<Lateral<Q>> for Lateral<Q>
+where
+    for<'a> Q: Num + Mul<Output = Q> + Neg<Output = Q>,
+{
+    type Output = Q;
 
-    fn mul(self, x: f64) -> Lateral {
-        return Lateral::new(self.b * x);
+    fn mul(self, w: Lateral<Q>) -> Q {
+        let b = self.b * w.b;
+        return Neg::neg(b);
     }
 }
 
-impl ops::Mul<i32> for Lateral {
-    type Output = Lateral;
+impl<'a, 'b, Q> ops::Mul<&'b Lateral<Q>> for &'a Lateral<Q>
+where
+    Q: Num + Mul<Output = Q> + Neg<Output = Q> + Copy,
+{
+    type Output = Q;
 
-    fn mul(self, x: i32) -> Lateral {
-        return Lateral::new(self.b * x as f64);
+    fn mul(self, w: &'b Lateral<Q>) -> Q {
+        let b = self.b * w.b;
+        return Neg::neg(b);
     }
 }
 
-impl ops::Mul<Lateral> for Lateral {
-    type Output = f64;
+impl<'a, Q> ops::Mul<Q> for Lateral<Q>
+where
+    Q: Num + Mul<Output = Q> + Neg<Output = Q>,
+{
+    type Output = Lateral<Q>;
 
-    fn mul(self, w: Lateral) -> f64 {
-        return self.b * w.b * -1.0;
+    fn mul(self, x: Q) -> Lateral<Q> {
+        let b = self.b * x;
+        return Lateral::new(b);
     }
 }
 
-impl ops::Mul<Complex> for Lateral {
-    type Output = Complex;
+impl<'a, 'b, Q> ops::Mul<&'b Q> for &'a Lateral<Q>
+where
+    Q: Num + Mul<Output = Q> + Neg<Output = Q> + Copy,
+{
+    type Output = Lateral<Q>;
 
-    fn mul(self, z: Complex) -> Complex {
-        let a_bar = &self * &z.w;
-        let w_bar = &self * &z.a;
-
-        return Complex::new(a_bar, w_bar);
-    }
-}
-
-impl<'a, 'b> ops::Mul<&'a f64> for &'b Lateral {
-    type Output = Lateral;
-
-    fn mul(self, x: &'a f64) -> Lateral {
-        return Lateral::new(self.b * *x);
-    }
-}
-
-impl<'a, 'b> ops::Mul<&'a i32> for &'b Lateral {
-    type Output = Lateral;
-
-    fn mul(self, x: &'a i32) -> Lateral {
-        return Lateral::new(self.b * *x as f64);
-    }
-}
-
-impl<'a, 'b> ops::Mul<&'a Lateral> for &'b Lateral {
-    type Output = f64;
-
-    fn mul(self, w: &'a Lateral) -> f64 {
-        return self.b * w.b * -1.0;
-    }
-}
-
-impl<'a, 'b> ops::Mul<&'a Complex> for &'b Lateral {
-    type Output = Complex;
-
-    fn mul(self, z: &'a Complex) -> Complex {
-        let a_bar = self * &z.w;
-        let w_bar = self * &z.a;
-
-        return Complex::new(a_bar, w_bar);
+    fn mul(self, x: &'b Q) -> Lateral<Q> {
+        let b = self.b * *x;
+        return Lateral::new(b);
     }
 }

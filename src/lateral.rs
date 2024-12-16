@@ -1,17 +1,26 @@
-pub struct Lateral {
-    pub b: f64,
+use std::ops;
+use std::ops::{Add, Mul, Sub};
+
+pub struct Lateral<Q> {
+    pub b: Q,
 }
 
-impl Lateral {
-    pub fn new(b: f64) -> Self {
+impl<Q> Lateral<Q>
+where
+    for<'a> &'a Q: Add<Output = Q> + Sub<Output = Q> + Mul<Output = Q> + TryInto<Q>,
+{
+    pub fn new(b: Q) -> Self {
         return Self { b };
     }
+}
 
-    pub fn to_string(&self) -> String {
-        if self.b == 1.0 {
-            return String::from("i");
-        } else {
-            return format!("{}i", self.b);
-        }
+impl<Q> ops::Add<&Lateral<Q>> for &Lateral<Q>
+where
+    for<'a> &'a Q: Add<Output = Q> + Sub<Output = Q> + Mul<Output = Q>,
+{
+    type Output = Lateral<Q>;
+
+    fn add(self, w: &Lateral<Q>) -> Lateral<Q> {
+        return Lateral::new(self.b + w.b);
     }
 }

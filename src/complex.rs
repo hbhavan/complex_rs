@@ -1,20 +1,18 @@
-use crate::Lateral;
+use num::Num;
 
-pub struct Complex {
-    pub a: f64,
-    pub w: Lateral,
+use crate::Lateral;
+use std::ops::{Add, Mul, Neg, Sub};
+
+pub struct Complex<Q> {
+    pub a: Q,
+    pub w: Lateral<Q>,
 }
 
-impl Complex {
-    pub fn new(a: f64, w: Lateral) -> Self {
+impl<Q> Complex<Q>
+where
+    for<'a> Q: Num + Add<Output = Q> + Mul<Output = Q> + Sub<Output = Q> + Neg<Output = Q>,
+{
+    pub fn new(a: Q, w: Lateral<Q>) -> Self {
         return Self { a, w };
-    }
-
-    pub fn to_string(&self) -> String {
-        if self.w.b == 0.0 {
-            return self.a.to_string();
-        } else {
-            return format!("{} + {}", self.a, self.w.to_string());
-        }
     }
 }
